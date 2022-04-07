@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<link rel="stylesheet" href="~/CSS/styles.css" />
+
+<form id="AddUser" method="post">
+    <fieldset class="col-12">
+        <legend class="align-content-center">Add User</legend>
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3" for="Username">Username:&nbsp;</label>
+                <input class="col-md-9" type="text" id="Username" name="Username" maxlength="100" required="required" />
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3" for="Email">Email:&nbsp;</label>
+                <input class="col-md-9" type="email" id="email" name="Email" maxlength="200" required="required"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3" for="Street">Street:&nbsp;</label>
+                <input class="col-md-9" type="text" id="street" name="Street" maxlength="250" required="required"/>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3" for="City">City:&nbsp;</label>
+                <input class="col-md-9" type="text" id="city" name="City" maxlength="100" required="required"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label class="col-md-3" for="State">State:&nbsp;</label>
+                <input class="col-md-9" type="text" id="state" name="State" maxlength="2" required="required"/>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-3" for="Zip">Zip:&nbsp;</label>
+                <input class="col-md-9" maxlength="5" type="number" min="1" max="99999" id="zip" name="Zip" required="required"/>
+            </div>
+        </div>
+            <div class="col-md-12">
+                <button id="submit" class="btn-primary" type="submit" >Submit</button>
+            </div>
+    </fieldset>
+</form>
+
+<div id=" _userTable">
+    @Html.Partial("_UserTable")
+</div>
+
+
+<script>
+    $("#AddUser").submit(function(event) {
+        event.preventDefault();
+        if (CheckValidation() != false) {
+            $('#submit').prop('disabled', true);
+            $('#submit').prop('value', "Submitting...");
+
+            var userInfo = new Object();
+            userInfo.Username = $("#Username").val();
+            userInfo.Email = $("#email").val();
+            userInfo.Street = $("#street").val();
+            userInfo.City = $("#city").val();
+            userInfo.State = $("#state").val();
+            userInfo.ZipCode = $("#zip").val();
+
+            
+
+            $.ajax({
+                type: 'POST',
+                url: '/Home/AddUserToDB',
+                data: JSON.stringify(userInfo),
+                contentType: "application/json; charset=utf-8",
+                success: function () {
+                    $('#submit').prop('disabled', false);
+                    $('#submit').prop('value', "Submit");
+                    $("#AddUser").trigger("reset");
+                },
+                error: function () {
+                    $('#submit').prop('disabled', false);
+                    $('#submit').prop('value', "Submit");
+                    alert("An error occurred while entering your data.");
+                }
+            });
+        }
+    });
+    function CheckValidation() {
+        const input = document.querySelector('input');
+        input.addEventListener('invalid', (e) => {
+            alert("Please fill in all required fields.");
+            return false;
+        });
+        return true;
+    }
+</script>

@@ -1,0 +1,55 @@
+﻿@using Newtonsoft.Json;
+<link href="~/CSS/_UserTableStyles.css" rel="stylesheet" />
+
+<div id="UserInfoTable" class="col-6 offset-3">
+        <table>
+            <thead>
+                <tr>
+                    <th v-for="col in columns">{{col}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="dataRow in getDataRows()">
+                    <td v-for="col in columns">{{dataRow[col]}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination">
+            <div class="number"
+                 v-for="pageNum in numPages()"
+                 v-bind:class="[pageNum == currentPage ? 'active' : '']"
+                 v-on:click="changePage(pageNum)">{{pageNum}}</div>
+        </div>
+    </div>
+
+<script>
+    var aboutPage = new Vue({
+        el: '#UserInfoTable',
+        data: {
+            UserData: @Html.Raw(JsonConvert.SerializeObject(Model)),
+            currentPage: 1,
+            ItemsPerPage: 5
+        },
+        methods: {
+            "getDataRows": function getDataRows() {
+                var start = (this.currentPage - 1) * this.ItemsPerPage;
+                var end = start + this.ItemsPerPage;
+                return this.UserData.slice(start, end);
+            },
+            "numPages": function numPages() {
+                return Math.ceil(this.UserData.length / this.ItemsPerPage);
+            },
+            "changePage": function changePage(page) {
+                this.currentPage = page;
+            }
+        },
+        computed: {
+            "columns": function columns() {
+                if (this.UserData.length == 0) {
+                    return [];
+                }
+                return Object.keys(this.UserData[0])
+            }
+        }
+    });
+</script>
