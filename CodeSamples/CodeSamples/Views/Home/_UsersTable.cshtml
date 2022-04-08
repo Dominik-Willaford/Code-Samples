@@ -1,34 +1,37 @@
-﻿@using Newtonsoft.Json;
+﻿@model List<CodeSamples.Models.UserInfo>
+@using Newtonsoft.Json;
+
 <link href="~/CSS/_UserTableStyles.css" rel="stylesheet" />
 
-<div id="UserInfoTable" class="col-6 offset-3">
-        <table>
-            <thead>
-                <tr>
-                    <th v-for="col in columns">{{col}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="dataRow in getDataRows()">
-                    <td v-for="col in columns">{{dataRow[col]}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="pagination">
-            <div class="number"
-                 v-for="pageNum in numPages()"
-                 v-bind:class="[pageNum == currentPage ? 'active' : '']"
-                 v-on:click="changePage(pageNum)">{{pageNum}}</div>
-        </div>
+<div id="UserInfoTable" class="col-12">    
+    <table>
+        <thead>
+            <tr>
+                <th v-for="col in columns">{{col}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="dataRow in getDataRows()">
+                <td v-for="col in columns">{{dataRow[col]}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <div class="number"
+             v-for="pageNum in numPages()"
+             v-bind:class="[pageNum == currentPage ? 'active' : '']"
+             v-on:click="changePage(pageNum)">{{pageNum}}</div>
     </div>
+</div>
 
 <script>
-    var aboutPage = new Vue({
+    var table = new Vue({
         el: '#UserInfoTable',
         data: {
             UserData: @Html.Raw(JsonConvert.SerializeObject(Model)),
             currentPage: 1,
-            ItemsPerPage: 5
+            ItemsPerPage: 5,
+            search: ''
         },
         methods: {
             "getDataRows": function getDataRows() {
@@ -41,7 +44,7 @@
             },
             "changePage": function changePage(page) {
                 this.currentPage = page;
-            }
+            },
         },
         computed: {
             "columns": function columns() {
@@ -53,3 +56,4 @@
         }
     });
 </script>
+

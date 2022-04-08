@@ -21,13 +21,18 @@ namespace CodeSamples.Controllers
             return View(_databaseFunctionService.GetEntries());
         }
 
+        public ActionResult GetPartialView()
+        {
+            return PartialView("_UsersTable",_databaseFunctionService.GetEntries());
+        }
+
         [HttpPost]
         public void AddUserToDB(UserInfo model)
         {
             _databaseFunctionService.CreateEntry(model);
         }
 
-        [HttpPost]
+        
         public string GetUsers()
         {
             List<UserInfo> users = _databaseFunctionService.GetEntries();
